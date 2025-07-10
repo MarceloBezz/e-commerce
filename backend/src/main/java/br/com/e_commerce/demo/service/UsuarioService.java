@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.e_commerce.demo.domain.perfil.PerfilEnum;
-import br.com.e_commerce.demo.domain.usuario.DadosCadastro;
+import br.com.e_commerce.demo.domain.usuario.DadosCadastroUsuario;
 import br.com.e_commerce.demo.domain.usuario.DadosUsuario;
 import br.com.e_commerce.demo.domain.usuario.Usuario;
 import br.com.e_commerce.demo.repository.PerfilRepository;
@@ -33,7 +33,7 @@ public class UsuarioService implements UserDetailsService{
         return repository.findByEmailIgnoreCase(username).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado!"));
     }
 
-    public DadosUsuario cadastrar(DadosCadastro dados) {
+    public DadosUsuario cadastrar(DadosCadastroUsuario dados) {
         var senhaCriptografada = encoder.encode(dados.senha());
         var perfil = perfilRepository.findByNome(PerfilEnum.CLIENTE);
         var usuario = new Usuario(dados, senhaCriptografada, perfil);

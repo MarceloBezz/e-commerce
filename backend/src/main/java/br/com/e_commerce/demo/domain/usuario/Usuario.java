@@ -40,7 +40,7 @@ public class Usuario implements UserDetails {
     @JoinTable(name = "usuarios_perfis", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "perfil_id"))
     private List<Perfil> perfis = new ArrayList<>();
 
-    public Usuario(DadosCadastro dto, String senhaCriptografada, Perfil perfil) {
+    public Usuario(DadosCadastroUsuario dto, String senhaCriptografada, Perfil perfil) {
         this.nome = dto.nome();
         this.email = dto.email();
         this.senha = senhaCriptografada;

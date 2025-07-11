@@ -25,8 +25,8 @@ public class Produto {
     private Long id;
     private String nome;
     private String descricao;
-    private double preco;
-    private int quantidade;
+    private Double preco;
+    private Integer quantidade;
 
     @ManyToOne
     @JoinColumn(name = "anunciante")
@@ -38,6 +38,21 @@ public class Produto {
         this.preco = dto.preco();
         this.quantidade = dto.quantidade();
         this.anunciante = usuario;
+    }
+
+    public void atualizarProduto(DadosEdicaoProduto dto) {
+        if (dto.nome() != null && dto.nome() != "") {
+            this.nome = dto.nome();
+        }
+        if (dto.descricao() != null && dto.descricao() != "") {
+            this.descricao = dto.descricao();
+        }
+        if (dto.preco() != null && dto.preco() > 0) {
+            this.preco = dto.preco();
+        }
+        if (dto.quantidade() != null && dto.quantidade() > 0) {
+            this.quantidade = dto.quantidade();
+        }
     }
 
 }

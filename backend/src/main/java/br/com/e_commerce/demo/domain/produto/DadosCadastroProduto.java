@@ -4,17 +4,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
 public record DadosCadastroProduto(
-    @NotBlank
-    String nome,
+        @NotBlank String nome,
 
-    @NotBlank
-    String descricao,
+        @NotBlank String descricao,
 
-    @Positive
-    double preco,
+        @Positive Double preco,
 
-    @Positive
-    int quantidade
-) {
-    
+        @Positive Integer quantidade) {
+
 }

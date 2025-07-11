@@ -9,5 +9,5 @@ import br.com.e_commerce.demo.domain.usuario.Usuario;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
-    Optional<Usuario>  findByEmailIgnoreCase(String email);
+    Optional<Usuario> findByEmailIgnoreCase(String email);
 }

@@ -45,4 +45,8 @@ public class UsuarioService implements UserDetailsService{
     public List<Usuario> listarTodos() {
         return repository.findAll();
     }
+
+    public DadosUsuario pegarPorId(Long id) {
+        return new DadosUsuario(repository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado!")));
+    }
 }

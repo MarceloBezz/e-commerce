@@ -27,6 +27,7 @@ public class UsuarioController {
             var usuario = service.cadastrar(dados);
             return ResponseEntity.ok(usuario);
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.badRequest().body("Erro ao cadastrar usuário!");
         }
     }

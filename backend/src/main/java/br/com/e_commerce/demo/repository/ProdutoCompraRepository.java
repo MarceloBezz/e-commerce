@@ -9,6 +9,6 @@ import br.com.e_commerce.demo.domain.produto_compra.ProdutoCompra;
 import br.com.e_commerce.demo.domain.produto_compra.ProdutoCompraID;
 
 @Repository
-public interface ProdutoCompraRepository extends JpaRepository<ProdutoCompraRepository, ProdutoCompraID>{
+public interface ProdutoCompraRepository extends JpaRepository<ProdutoCompra, ProdutoCompraID>{
     ProdutoCompra findByCompraAndProduto(Compra compra, Produto produto);
 }

@@ -27,7 +27,7 @@ public class ConfiguracoesSeguranca {
     public SecurityFilterChain filtrosDeSeguranca(HttpSecurity http) throws Exception {
         return http
             .authorizeHttpRequests(req -> {
-                req.requestMatchers(HttpMethod.POST, "/cadastro").permitAll();
+                req.requestMatchers(HttpMethod.POST, "/usuario/cadastro").permitAll();
                 req.requestMatchers(HttpMethod.POST, "/login").permitAll();
 
                 req.anyRequest().authenticated();

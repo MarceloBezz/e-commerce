@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/carrinho")
@@ -30,5 +30,14 @@ public class CarrinhoController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    
+
+    @GetMapping
+    public ResponseEntity<Object> recuperarProdutosCarrinho(@AuthenticationPrincipal Usuario usuario) {
+        try {
+            var produtos = service.recuperarProdutosCarrinho(usuario);
+            return ResponseEntity.ok().body(produtos);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

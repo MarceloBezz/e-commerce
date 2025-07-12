@@ -1,8 +1,14 @@
 package br.com.e_commerce.demo.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.e_commerce.demo.domain.carrinho_produto.DadosCarrinhoProduto;
 import br.com.e_commerce.demo.domain.produto.DadosProdutoCarrinho;
 import br.com.e_commerce.demo.domain.usuario.Usuario;
 import br.com.e_commerce.demo.repository.CarrinhoRepository;
@@ -32,6 +38,23 @@ public class CarrinhoService {
         // - Verificar se o produto já não está no carrinho
 
         carrinho.adicionarProduto(produto, dto.quantidade());
+    }
+
+    public Map<String, Object> recuperarProdutosCarrinho(Usuario usuario) {
+        var carrinho = carrinhoRepository.findByUsuarioId(usuario.getId())
+                .orElseThrow(() -> new RuntimeException("Carrinho não encontrado!"));
+
+        List<DadosCarrinhoProduto> produtos = new ArrayList<>();
+        for (var produtoCarrinho : carrinho.getProdutos()) {
+                var p = produtoCarrinho.getProduto();
+                produtos.add(new DadosCarrinhoProduto(p.getNome(), p.getDescricao(), produtoCarrinho.getQuantidade(), p.getPreco(), p.getAnunciante().getNome()));
+        }
+
+        Map<String, Object> resposta = new HashMap<>();
+        resposta.put("produtos", produtos);
+        resposta.put("valorTotal", carrinho.getValor());
+
+        return resposta;
     }
 
 }

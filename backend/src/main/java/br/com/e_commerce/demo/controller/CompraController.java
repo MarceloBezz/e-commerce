@@ -21,7 +21,7 @@ public class CompraController {
     @Autowired
     private CompraService service;
 
-    @PostMapping("/{idProduto}")
+    @PostMapping("/unico/{idProduto}")
     public ResponseEntity<String> comprarUmProduto(@PathVariable Long idProduto,
             @AuthenticationPrincipal Usuario usuario, @RequestBody DadosCadastroCompra dto) {
         try {

@@ -30,6 +30,9 @@ public class ConfiguracoesSeguranca {
                 req.requestMatchers(HttpMethod.POST, "/usuario/cadastro").permitAll();
                 req.requestMatchers(HttpMethod.POST, "/login").permitAll();
 
+                req.requestMatchers(HttpMethod.DELETE, "/usuario/{id}").hasRole("ADMINISTRADOR");
+                req.requestMatchers(HttpMethod.PATCH, "/usuario/{id}").hasRole("ADMINISTRADOR");
+
                 req.anyRequest().authenticated();
             })
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

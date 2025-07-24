@@ -11,7 +11,9 @@ import br.com.e_commerce.demo.domain.usuario.DadosCadastroUsuario;
 import br.com.e_commerce.demo.service.UsuarioService;
 import jakarta.validation.Valid;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
@@ -51,6 +53,30 @@ public class UsuarioController {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Erro ao buscar usuário!");
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletarUsuario(@PathVariable Long id) {
+        try {
+            service.deletarUsuario(id);
+            return ResponseEntity.ok("Usuário deletado com sucesso!");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.ok("Erro ao deletar usuário!");
+        }
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<String> reativarUsuario(@PathVariable Long id) {
+        try {
+            service.reativarUsuario(id);
+            return ResponseEntity.ok("Usuário reativado com sucesso!");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.ok("Erro ao deletar usuário!");
         }
     }
 }

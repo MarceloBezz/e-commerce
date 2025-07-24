@@ -15,6 +15,7 @@ import br.com.e_commerce.demo.domain.usuario.DadosUsuario;
 import br.com.e_commerce.demo.domain.usuario.Usuario;
 import br.com.e_commerce.demo.repository.PerfilRepository;
 import br.com.e_commerce.demo.repository.UsuarioRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class UsuarioService implements UserDetailsService{
@@ -48,5 +49,22 @@ public class UsuarioService implements UserDetailsService{
 
     public DadosUsuario pegarPorId(Long id) {
         return new DadosUsuario(repository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado!")));
+    }
+
+    @Transactional
+    public void deletarUsuario(Long id) {
+        var usuario = repository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
+
+        usuario.setAtivo(false);
+    }
+
+    @Transactional
+    public void reativarUsuario(Long id) {
+        var usuario = repository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
+
+        if (usuario.isAtivo()) 
+            throw new RuntimeException("Usuário já está ativo!");
+        
+        usuario.setAtivo(true);
     }
 }

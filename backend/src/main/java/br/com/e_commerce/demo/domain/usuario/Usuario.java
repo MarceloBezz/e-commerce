@@ -38,6 +38,7 @@ public class Usuario implements UserDetails {
     private String email;
     private String senha;
     private String token;
+    private boolean ativo;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "usuarios_perfis", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "perfil_id"))
@@ -51,11 +52,17 @@ public class Usuario implements UserDetails {
         this.email = dto.email();
         this.senha = senhaCriptografada;
         perfis.add(perfil);
+        this.ativo = true;
 
         this.carrinho = new Carrinho(this);
     }
 
     public Usuario(){}
+
+    @Override
+    public boolean isEnabled() {
+        return ativo;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

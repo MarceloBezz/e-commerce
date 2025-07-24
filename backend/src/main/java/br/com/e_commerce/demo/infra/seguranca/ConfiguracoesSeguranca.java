@@ -3,6 +3,8 @@ package br.com.e_commerce.demo.infra.seguranca;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -53,5 +55,12 @@ public class ConfiguracoesSeguranca {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
             throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public RoleHierarchy hierarquiaPerfil() {
+        String hierarquia = "ROLE_ADMINISTRADOR > ROLE_MODERADOR\n" +
+        "ROLE_MODERADOR > ROLE_CLIENTE";
+        return RoleHierarchyImpl.fromHierarchy(hierarquia);
     }
 }

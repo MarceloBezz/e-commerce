@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import br.com.e_commerce.demo.domain.carrinho_produto.DadosCarrinhoProduto;
 import br.com.e_commerce.demo.domain.produto.DadosProdutoCarrinho;
 import br.com.e_commerce.demo.domain.usuario.Usuario;
+import br.com.e_commerce.demo.repository.CarrinhoProdutoRepository;
 import br.com.e_commerce.demo.repository.CarrinhoRepository;
 import br.com.e_commerce.demo.repository.ProdutoRepository;
 import jakarta.transaction.Transactional;
@@ -22,28 +23,26 @@ public class CarrinhoService {
     private ProdutoRepository produtoRepository;
 
     @Autowired
-    CarrinhoRepository carrinhoRepository;
+    private CarrinhoRepository carrinhoRepository;
+
+    @Autowired
+    private CarrinhoProdutoRepository repository;
 
     @Transactional
     public void inserirProduto(DadosProdutoCarrinho dto, Usuario usuario) {
         var produto = produtoRepository.findById(dto.idProduto())
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado!"));
 
-        var carrinho = carrinhoRepository.findByUsuarioId(usuario.getId())
-                .orElseThrow(() -> new RuntimeException("Carrinho não encontrado!"));
-
         // TODO: VALIDAÇÕES ANTES DE INSERIR O PRODUTO NO CARRINHO
         // - Estoque deve estar disponível
         // - O produto não deve ser do usuário interessado
         // - Verificar se o produto já não está no carrinho
-
+        var carrinho = carrinhoRepository.findById(usuario.getCarrinho().getId()).get();
         carrinho.adicionarProduto(produto, dto.quantidade());
     }
 
     public Map<String, Object> recuperarProdutosCarrinho(Usuario usuario) {
-        var carrinho = carrinhoRepository.findByUsuarioId(usuario.getId())
-                .orElseThrow(() -> new RuntimeException("Carrinho não encontrado!"));
-
+        var carrinho = carrinhoRepository.findById(usuario.getCarrinho().getId()).get();
         List<DadosCarrinhoProduto> produtos = new ArrayList<>();
         for (var produtoCarrinho : carrinho.getProdutos()) {
                 var p = produtoCarrinho.getProduto();
@@ -52,9 +51,30 @@ public class CarrinhoService {
 
         Map<String, Object> resposta = new HashMap<>();
         resposta.put("produtos", produtos);
-        resposta.put("valorTotal", carrinho.getValor());
+        resposta.put("valorTotal", usuario.getCarrinho().getValor());
 
         return resposta;
+    }
+
+    @Transactional
+    public void removerProdutoDoCarrinho(Usuario usuario, Long idProduto) {
+        var produto = produtoRepository.findById(idProduto)
+                .orElseThrow(() -> new RuntimeException("Produto não encontrado!"));
+        var carrinho = carrinhoRepository.findById(usuario.getCarrinho().getId()).get();
+
+        if (!repository.existsByCarrinhoAndProduto(carrinho, produto))
+            throw new RuntimeException("Este produto não está em seu carrinho!");
+
+        repository.deletarPorCarrinhoEProduto(carrinho, produto);
+        carrinho.novoValorCarrinho();
+    }
+
+    @Transactional
+    public void esvaziarCarrinho(Usuario usuario) {
+        var carrinho = carrinhoRepository.findById(usuario.getCarrinho().getId()).get();
+
+        repository.esvaziarCarrinho(carrinho);
+        carrinho.novoValorCarrinho();
     }
 
 }

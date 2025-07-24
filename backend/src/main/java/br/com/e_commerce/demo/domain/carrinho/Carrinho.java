@@ -44,10 +44,22 @@ public class Carrinho {
         //TODO: VALIDAÇÃO PARA VER SE O PRODUTO JÁ NÃO ESTÁ NO CARRINHO
 
         this.produtos.add(new CarrinhoProduto(this, produto, quantidade));
-        this.valor = (produto.getPreco() * quantidade);
+        this.valor += (produto.getPreco() * quantidade);
     }
 
     public Carrinho(Usuario usuario) {
         this.usuario = usuario;
+    }
+
+    public void novoValorCarrinho() {
+        this.valor = 0.0;
+        
+        if (produtos.size() == 0)
+            return;
+        
+
+        for (var produto : this.produtos) {
+            this.valor += produto.getProduto().getPreco() * produto.getQuantidade();
+        }
     }
 }

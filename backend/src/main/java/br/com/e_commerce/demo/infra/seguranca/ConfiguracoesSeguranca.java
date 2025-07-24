@@ -30,8 +30,11 @@ public class ConfiguracoesSeguranca {
                 req.requestMatchers(HttpMethod.POST, "/usuario/cadastro").permitAll();
                 req.requestMatchers(HttpMethod.POST, "/login").permitAll();
 
-                req.requestMatchers(HttpMethod.DELETE, "/usuario/{id}").hasRole("ADMINISTRADOR");
-                req.requestMatchers(HttpMethod.PATCH, "/usuario/{id}").hasRole("ADMINISTRADOR");
+                req.requestMatchers(HttpMethod.DELETE, "/usuario/**").hasRole("ADMINISTRADOR");
+                req.requestMatchers(HttpMethod.PATCH, "/usuario/**").hasRole("ADMINISTRADOR");
+
+                req.requestMatchers("/carrinho").hasRole("CLIENTE");
+                req.requestMatchers("/carrinho/**").hasRole("CLIENTE");
 
                 req.anyRequest().authenticated();
             })

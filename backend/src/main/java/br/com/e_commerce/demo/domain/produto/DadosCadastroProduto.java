@@ -10,6 +10,8 @@ public record DadosCadastroProduto(
 
         @Positive Double preco,
 
-        @Positive Integer quantidade) {
+        @Positive Integer quantidade,
+        
+        @NotBlank Categoria categoria) {
 
 }

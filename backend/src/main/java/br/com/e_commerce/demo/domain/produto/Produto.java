@@ -27,6 +27,7 @@ public class Produto {
     private String descricao;
     private Double preco;
     private Integer quantidade;
+    private Categoria categoria;
 
     @ManyToOne
     @JoinColumn(name = "anunciante")

@@ -4,9 +4,10 @@ public record DadosProduto(
     String nome,
     String descricao,
     Integer quantidade,
-    Double preco
+    Double preco,
+    Categoria categoria
 ) {
     public DadosProduto(Produto produto) {
-        this(produto.getNome(), produto.getDescricao(), produto.getQuantidade(), produto.getPreco());
+        this(produto.getNome(), produto.getDescricao(), produto.getQuantidade(), produto.getPreco(), produto.getCategoria());
     }
 }

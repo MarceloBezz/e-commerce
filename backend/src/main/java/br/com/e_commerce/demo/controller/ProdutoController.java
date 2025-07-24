@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.e_commerce.demo.domain.produto.Categoria;
 import br.com.e_commerce.demo.domain.produto.DadosCadastroProduto;
 import br.com.e_commerce.demo.domain.produto.DadosEdicaoProduto;
 import br.com.e_commerce.demo.domain.usuario.Usuario;
@@ -67,4 +68,15 @@ public class ProdutoController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/categoria")
+    public ResponseEntity<Object> filtrarPorCategoria(@RequestBody Categoria categoria) {
+        try {
+            var produtos = service.buscarPorCategoria(categoria);
+            return ResponseEntity.ok(produtos);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    
 }

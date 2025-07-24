@@ -1,10 +1,13 @@
 package br.com.e_commerce.demo.service;
 
 import java.beans.Transient;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.e_commerce.demo.domain.produto.Categoria;
 import br.com.e_commerce.demo.domain.produto.DadosCadastroProduto;
 import br.com.e_commerce.demo.domain.produto.DadosEdicaoProduto;
 import br.com.e_commerce.demo.domain.produto.DadosProduto;
@@ -53,6 +56,17 @@ public class ProdutoService {
         }
 
         repository.deleteById(idProduto);
+    }
+
+    public List<DadosProduto> buscarPorCategoria(Categoria categoria) {
+        var produtos = repository.findByCategoria(categoria);
+
+        List<DadosProduto> lista = new ArrayList<>();
+        for (Produto produto : produtos) {
+            lista.add(new DadosProduto(produto));
+        }
+
+        return lista;
     }
 
 }

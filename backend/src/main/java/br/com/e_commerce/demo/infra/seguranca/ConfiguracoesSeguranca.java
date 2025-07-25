@@ -38,6 +38,8 @@ public class ConfiguracoesSeguranca {
                 req.requestMatchers("/carrinho").hasRole("CLIENTE");
                 req.requestMatchers("/carrinho/**").hasRole("CLIENTE");
 
+                req.requestMatchers("/compra/**").hasRole("CLIENTE");
+
                 req.anyRequest().authenticated();
             })
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

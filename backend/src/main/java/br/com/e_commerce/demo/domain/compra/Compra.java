@@ -9,6 +9,7 @@ import br.com.e_commerce.demo.domain.produto_compra.ProdutoCompra;
 import br.com.e_commerce.demo.domain.usuario.Usuario;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,10 +32,11 @@ public class Compra {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Usuario usuario;
 
     private LocalDateTime dataCompra;
+    private Double valorCompra;
 
     // @ManyToMany
     // @JoinTable(name = "produtos_compras", joinColumns = @JoinColumn(name = "compra_id"), inverseJoinColumns = @JoinColumn(name = "produto_id"))
@@ -46,10 +48,12 @@ public class Compra {
     public void adicionarItem(Produto produto, Integer quantidade, Double precoUnitario) {
         var produtoCompra = new ProdutoCompra(this, produto, quantidade, precoUnitario);
         this.produtos.add(produtoCompra);
+        valorCompra += produto.getPreco() * quantidade;
     }
 
     public Compra(Usuario usuarioCompra) {
         this.usuario = usuarioCompra;
         this.dataCompra = LocalDateTime.now();
+        this.valorCompra = 0.0;
     }
 }

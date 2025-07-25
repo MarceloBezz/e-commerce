@@ -56,10 +56,14 @@ public class Carrinho {
         
         if (produtos.size() == 0)
             return;
-        
 
         for (var produto : this.produtos) {
             this.valor += produto.getProduto().getPreco() * produto.getQuantidade();
         }
+    }
+
+    public void esvaziarCarrinho() {
+        produtos.clear();
+        this.valor = 0.0;
     }
 }

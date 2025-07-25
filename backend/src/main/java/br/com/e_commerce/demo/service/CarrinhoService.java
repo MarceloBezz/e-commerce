@@ -72,9 +72,7 @@ public class CarrinhoService {
     @Transactional
     public void esvaziarCarrinho(Usuario usuario) {
         var carrinho = carrinhoRepository.findById(usuario.getCarrinho().getId()).get();
-
-        repository.esvaziarCarrinho(carrinho);
-        carrinho.novoValorCarrinho();
+        carrinho.esvaziarCarrinho();
     }
 
 }

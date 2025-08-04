@@ -17,14 +17,9 @@ public class AuthController {
     private AuthService service;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody @Valid DadosLogin dados) {
-        try {
-            String token = service.login(dados);
-    
-            return ResponseEntity.ok("Usuário logado!\nToken: " + token);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<String> login(@RequestBody @Valid DadosLogin dados) throws Exception{
+        String token = service.login(dados);
+        return ResponseEntity.ok("Usuário logado!\nToken: " + token);
     }
-    
+
 }

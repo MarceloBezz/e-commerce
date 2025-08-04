@@ -25,58 +25,31 @@ public class UsuarioController {
 
     @PostMapping("/cadastro")
     public ResponseEntity<Object> cadastrar(@RequestBody @Valid DadosCadastroUsuario dados) {
-        try {
-            var usuario = service.cadastrar(dados);
-            return ResponseEntity.ok(usuario);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return ResponseEntity.badRequest().body("Erro ao cadastrar usuário!");
-        }
+        var usuario = service.cadastrar(dados);
+        return ResponseEntity.ok(usuario);
     }
 
     @GetMapping
     public ResponseEntity<Object> listarTodos() {
-        try {
-            var usuarios = service.listarTodos();
-            return ResponseEntity.ok(usuarios);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Erro ao listar usuários!");
-        }
+        var usuarios = service.listarTodos();
+        return ResponseEntity.ok(usuarios);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> pegarPorId(@PathVariable Long id) {
-        try {
-            var usuario = service.pegarPorId(id);
-            return ResponseEntity.ok(usuario);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Erro ao buscar usuário!");
-        }
+        var usuario = service.pegarPorId(id);
+        return ResponseEntity.ok(usuario);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletarUsuario(@PathVariable Long id) {
-        try {
-            service.deletarUsuario(id);
-            return ResponseEntity.ok("Usuário deletado com sucesso!");
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.ok("Erro ao deletar usuário!");
-        }
+        service.deletarUsuario(id);
+        return ResponseEntity.ok("Usuário deletado com sucesso!");
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<String> reativarUsuario(@PathVariable Long id) {
-        try {
-            service.reativarUsuario(id);
-            return ResponseEntity.ok("Usuário reativado com sucesso!");
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.ok("Erro ao deletar usuário!");
-        }
+        service.reativarUsuario(id);
+        return ResponseEntity.ok("Usuário reativado com sucesso!");
     }
 }

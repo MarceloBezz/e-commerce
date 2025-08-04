@@ -13,6 +13,7 @@ import br.com.e_commerce.demo.domain.perfil.PerfilEnum;
 import br.com.e_commerce.demo.domain.usuario.DadosCadastroUsuario;
 import br.com.e_commerce.demo.domain.usuario.DadosUsuario;
 import br.com.e_commerce.demo.domain.usuario.Usuario;
+import br.com.e_commerce.demo.infra.exception.RegraDeNegocioException;
 import br.com.e_commerce.demo.repository.PerfilRepository;
 import br.com.e_commerce.demo.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
@@ -48,22 +49,22 @@ public class UsuarioService implements UserDetailsService{
     }
 
     public DadosUsuario pegarPorId(Long id) {
-        return new DadosUsuario(repository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado!")));
+        return new DadosUsuario(repository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado!")));
     }
 
     @Transactional
     public void deletarUsuario(Long id) {
-        var usuario = repository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
+        var usuario = repository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado!"));
 
         usuario.setAtivo(false);
     }
 
     @Transactional
     public void reativarUsuario(Long id) {
-        var usuario = repository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
+        var usuario = repository.findById(id).orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado!"));
 
         if (usuario.isAtivo()) 
-            throw new RuntimeException("Usuário já está ativo!");
+            throw new RegraDeNegocioException("Usuário já está ativo!");
         
         usuario.setAtivo(true);
     }

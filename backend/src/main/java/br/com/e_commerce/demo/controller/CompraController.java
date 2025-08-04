@@ -25,57 +25,28 @@ public class CompraController {
     @PostMapping("/unico/{idProduto}")
     public ResponseEntity<String> comprarUmProduto(@PathVariable Long idProduto,
             @AuthenticationPrincipal Usuario usuario, @RequestBody DadosCadastroCompra dto) {
-        try {
-            service.realizarCompra(idProduto, usuario, dto);
-            return ResponseEntity.ok().body("Compra realizada com sucesso!");
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Erro ao realizar compra!");
-        }
+        service.realizarCompra(idProduto, usuario, dto);
+        return ResponseEntity.ok().body("Compra realizada com sucesso!");
     }
 
     @PostMapping("/carrinho")
     public ResponseEntity<String> comprarProdutosCarrinho(@AuthenticationPrincipal Usuario usuario) {
-        try {
-            var valorCompra = service.realizarCompraCarrinho(usuario);
-            return ResponseEntity.ok().body(valorCompra);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Erro ao realizar compra!");
-        }
+        var valorCompra = service.realizarCompraCarrinho(usuario);
+        return ResponseEntity.ok().body(valorCompra);
     }
 
     @GetMapping("/visualizar/todas/{usuarioId}")
     public ResponseEntity<Object> visualizarTodasAsCompras(@AuthenticationPrincipal Usuario usuario,
             @PathVariable Long usuarioId) {
-        try {
-            var compras = service.listarCompras(usuario, usuarioId);
-
-            if (compras.size() == 0)
-                return ResponseEntity.ok().body("Você ainda não fez nenhuma compra!");
-
-            return ResponseEntity.ok().body(compras);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Erro ao listar compras!");
-        }
+        var compras = service.listarCompras(usuario, usuarioId);
+        return ResponseEntity.ok().body(compras);
     }
 
     @GetMapping("/visualizar/{idCompra}")
     public ResponseEntity<Object> visualizarCompra(@PathVariable Long idCompra,
             @AuthenticationPrincipal Usuario usuario) {
-        try {
-            var compra = service.visualizarCompra(idCompra, usuario);
-
-            return ResponseEntity.ok().body(compra);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Erro ao visualizar compra!");
-        }
+        var compra = service.visualizarCompra(idCompra, usuario);
+        return ResponseEntity.ok().body(compra);
     }
 
 }

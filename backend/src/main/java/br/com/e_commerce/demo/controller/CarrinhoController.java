@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.e_commerce.demo.domain.produto.DadosProdutoCarrinho;
 import br.com.e_commerce.demo.domain.usuario.Usuario;
+import br.com.e_commerce.demo.infra.exception.RegraDeNegocioException;
 import br.com.e_commerce.demo.service.CarrinhoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,43 +26,27 @@ public class CarrinhoController {
 
     @PostMapping("/inserir")
     public ResponseEntity<Object> inserirProduto(@RequestBody DadosProdutoCarrinho dto,
-            @AuthenticationPrincipal Usuario usuario) {
-        try {
-            service.inserirProduto(dto, usuario);
-            return ResponseEntity.ok().body("Produto inserido no carrinho!");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+            @AuthenticationPrincipal Usuario usuario) throws RegraDeNegocioException, Exception {
+        service.inserirProduto(dto, usuario);
+        return ResponseEntity.ok().body("Produto inserido no carrinho!");
     }
 
     @GetMapping
     public ResponseEntity<Object> recuperarProdutosCarrinho(@AuthenticationPrincipal Usuario usuario) {
-        try {
-            var produtos = service.recuperarProdutosCarrinho(usuario);
-            return ResponseEntity.ok().body(produtos);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        var produtos = service.recuperarProdutosCarrinho(usuario);
+        return ResponseEntity.ok().body(produtos);
     }
 
     @DeleteMapping("/{idProduto}")
     public ResponseEntity<String> removerProdutoDoCarrinho(@PathVariable Long idProduto,
-            @AuthenticationPrincipal Usuario usuario) {
-        try {
-            service.removerProdutoDoCarrinho(usuario, idProduto);
-            return ResponseEntity.ok("Produto removido do carrinho!");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+            @AuthenticationPrincipal Usuario usuario) throws RegraDeNegocioException {
+        service.removerProdutoDoCarrinho(usuario, idProduto);
+        return ResponseEntity.ok("Produto removido do carrinho!");
     }
 
     @DeleteMapping
     public ResponseEntity<String> esvaziarCarrinho(@AuthenticationPrincipal Usuario usuario) {
-        try {
-            service.esvaziarCarrinho(usuario);
-            return ResponseEntity.ok("Carrinho esvaziado com sucesso!");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        service.esvaziarCarrinho(usuario);
+        return ResponseEntity.ok("Carrinho esvaziado com sucesso!");
     }
 }

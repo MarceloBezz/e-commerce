@@ -12,6 +12,7 @@ import br.com.e_commerce.demo.domain.compra.DadosCompra;
 import br.com.e_commerce.demo.domain.compra.DadosProdutoComprado;
 import br.com.e_commerce.demo.domain.perfil.PerfilEnum;
 import br.com.e_commerce.demo.domain.usuario.Usuario;
+import br.com.e_commerce.demo.infra.exception.RegraDeNegocioException;
 import br.com.e_commerce.demo.repository.CarrinhoRepository;
 import br.com.e_commerce.demo.repository.CompraRepository;
 import br.com.e_commerce.demo.repository.PerfilRepository;
@@ -40,7 +41,7 @@ public class CompraService {
     @Transactional
     public void realizarCompra(Long idProduto, Usuario usuario, DadosCadastroCompra dto) {
         var produto = produtoRepository.findById(idProduto)
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado!"));
+                .orElseThrow(() -> new RegraDeNegocioException("Produto não encontrado!"));
 
         // TODO: VALIDAÇÕES DO PRODUTO E DO USUÁRIO:
         // - O usuário não deve ser o anunciante do produto
@@ -59,7 +60,7 @@ public class CompraService {
                 .get();
 
         if (carrinho.getProdutos().size() == 0)
-            throw new RuntimeException("Você não tem produtos no carrinho!");
+            throw new RegraDeNegocioException("Você não tem produtos no carrinho!");
 
         var compra = new Compra(usuario);
         for (var carrinhoProduto : carrinho.getProdutos()) {
@@ -78,7 +79,7 @@ public class CompraService {
 
     public List<DadosCompra> listarCompras(Usuario usuarioLogado, Long usuarioId) {
         if (!validarPermissaoUsuario(usuarioLogado, usuarioId, PerfilEnum.ADMINISTRADOR))
-            throw new RuntimeException("Você não tem permissão para acessar esse conteúdo!");
+            throw new RegraDeNegocioException("Você não tem permissão para acessar esse conteúdo!");
 
         var compras = repository.findByUsuarioId(usuarioId);
 
@@ -97,11 +98,11 @@ public class CompraService {
 
     public DadosCompra visualizarCompra(Long idCompra, Usuario usuarioLogado) {
         var compra = repository.findById(idCompra)
-            .orElseThrow(() -> new RuntimeException("Compra não encontrada!"));
+            .orElseThrow(() -> new RegraDeNegocioException("Compra não encontrada!"));
 
         var comprador = compra.getUsuario().getId();
         if (!validarPermissaoUsuario(usuarioLogado, comprador, PerfilEnum.ADMINISTRADOR))
-            throw new RuntimeException("Você não tem permissão para acessar esse conteúdo!");
+            throw new RegraDeNegocioException("Você não tem permissão para acessar esse conteúdo!");
 
         var dadosProdutosComprados = compra.getProdutos()
                 .stream()

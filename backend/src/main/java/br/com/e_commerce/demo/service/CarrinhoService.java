@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import br.com.e_commerce.demo.domain.carrinho_produto.DadosCarrinhoProduto;
 import br.com.e_commerce.demo.domain.produto.DadosProdutoCarrinho;
 import br.com.e_commerce.demo.domain.usuario.Usuario;
+import br.com.e_commerce.demo.infra.exception.RegraDeNegocioException;
 import br.com.e_commerce.demo.repository.CarrinhoProdutoRepository;
 import br.com.e_commerce.demo.repository.CarrinhoRepository;
 import br.com.e_commerce.demo.repository.ProdutoRepository;
@@ -63,7 +64,7 @@ public class CarrinhoService {
         var carrinho = carrinhoRepository.findById(usuario.getCarrinho().getId()).get();
 
         if (!repository.existsByCarrinhoAndProduto(carrinho, produto))
-            throw new RuntimeException("Este produto não está em seu carrinho!");
+            throw new RegraDeNegocioException("Este produto não está em seu carrinho!");
 
         repository.deletarPorCarrinhoEProduto(carrinho, produto);
         carrinho.novoValorCarrinho();

@@ -41,8 +41,6 @@ public class Carrinho {
     private List<CarrinhoProduto> produtos = new ArrayList<>();
 
     public void adicionarProduto(Produto produto, int quantidade) {
-        //TODO: VALIDAÇÃO PARA VER SE O PRODUTO JÁ NÃO ESTÁ NO CARRINHO
-
         this.produtos.add(new CarrinhoProduto(this, produto, quantidade));
         this.valor += (produto.getPreco() * quantidade);
     }

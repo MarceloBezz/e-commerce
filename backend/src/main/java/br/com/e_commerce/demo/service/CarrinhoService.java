@@ -12,6 +12,7 @@ import br.com.e_commerce.demo.domain.carrinho_produto.DadosCarrinhoProduto;
 import br.com.e_commerce.demo.domain.produto.DadosProdutoCarrinho;
 import br.com.e_commerce.demo.domain.usuario.Usuario;
 import br.com.e_commerce.demo.infra.exception.RegraDeNegocioException;
+import br.com.e_commerce.demo.infra.validadores.ValidarAdicaoCarrinhoImpl;
 import br.com.e_commerce.demo.repository.CarrinhoProdutoRepository;
 import br.com.e_commerce.demo.repository.CarrinhoRepository;
 import br.com.e_commerce.demo.repository.ProdutoRepository;
@@ -29,16 +30,19 @@ public class CarrinhoService {
     @Autowired
     private CarrinhoProdutoRepository repository;
 
+    @Autowired 
+    private ValidarAdicaoCarrinhoImpl validadores;
+
     @Transactional
     public void inserirProduto(DadosProdutoCarrinho dto, Usuario usuario) {
         var produto = produtoRepository.findById(dto.idProduto())
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado!"));
-
-        // TODO: VALIDAÇÕES ANTES DE INSERIR O PRODUTO NO CARRINHO
-        // - Estoque deve estar disponível
-        // - O produto não deve ser do usuário interessado
-        // - Verificar se o produto já não está no carrinho
         var carrinho = carrinhoRepository.findById(usuario.getCarrinho().getId()).get();
+
+        validadores.validarComprador(produto, usuario);
+        validadores.validarEstoqueDisponivel(produto, dto.quantidade());
+        validadores.produtoJaAdicionado(produto, carrinho);
+
         carrinho.adicionarProduto(produto, dto.quantidade());
     }
 

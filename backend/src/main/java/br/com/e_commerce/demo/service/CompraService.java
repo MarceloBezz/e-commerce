@@ -10,14 +10,13 @@ import br.com.e_commerce.demo.domain.compra.Compra;
 import br.com.e_commerce.demo.domain.compra.DadosCadastroCompra;
 import br.com.e_commerce.demo.domain.compra.DadosCompra;
 import br.com.e_commerce.demo.domain.compra.DadosProdutoComprado;
-import br.com.e_commerce.demo.domain.perfil.PerfilEnum;
 import br.com.e_commerce.demo.domain.usuario.Usuario;
 import br.com.e_commerce.demo.infra.exception.RegraDeNegocioException;
+import br.com.e_commerce.demo.infra.validadores.ValidarPermissaoUsuario;
+import br.com.e_commerce.demo.infra.validadores.ValidarProdutoCompraImpl;
 import br.com.e_commerce.demo.repository.CarrinhoRepository;
 import br.com.e_commerce.demo.repository.CompraRepository;
-import br.com.e_commerce.demo.repository.PerfilRepository;
 import br.com.e_commerce.demo.repository.ProdutoRepository;
-import br.com.e_commerce.demo.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -33,21 +32,20 @@ public class CompraService {
     private CarrinhoRepository carrinhoRepository;
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private ValidarProdutoCompraImpl validadores;
 
     @Autowired
-    private PerfilRepository perfilRepository;
+    private ValidarPermissaoUsuario permissao = new ValidarPermissaoUsuario();
 
     @Transactional
     public void realizarCompra(Long idProduto, Usuario usuario, DadosCadastroCompra dto) {
         var produto = produtoRepository.findById(idProduto)
                 .orElseThrow(() -> new RegraDeNegocioException("Produto não encontrado!"));
 
-        // TODO: VALIDAÇÕES DO PRODUTO E DO USUÁRIO:
-        // - O usuário não deve ser o anunciante do produto
-        // - O estoque do produto deve ser maior que zero
+        validadores.validarComprador(produto, usuario);
+        validadores.validarEstoqueDisponivel(produto, dto.quantidade());
 
-        produto.setQuantidade(produto.getQuantidade() - 1);
+        produto.setQuantidade(produto.getQuantidade() - dto.quantidade());
         var compra = new Compra(usuario);
         compra.adicionarItem(produto, dto.quantidade(), produto.getPreco());
         repository.save(compra);
@@ -67,7 +65,8 @@ public class CompraService {
             compra.adicionarItem(carrinhoProduto.getProduto(), carrinhoProduto.getQuantidade(),
                     carrinhoProduto.getProduto().getPreco());
             // Remover do estoque a quantidade comprada
-            carrinhoProduto.getProduto()
+            carrinhoProduto
+                    .getProduto()
                     .setQuantidade(carrinhoProduto.getProduto().getQuantidade() - carrinhoProduto.getQuantidade());
         }
 
@@ -78,7 +77,7 @@ public class CompraService {
     }
 
     public List<DadosCompra> listarCompras(Usuario usuarioLogado, Long usuarioId) {
-        if (!validarPermissaoUsuario(usuarioLogado, usuarioId, PerfilEnum.ADMINISTRADOR))
+        if (!permissao.validarPermissaoUsuario(usuarioLogado, usuarioId, "ADMINISTRADOR"))
             throw new RegraDeNegocioException("Você não tem permissão para acessar esse conteúdo!");
 
         var compras = repository.findByUsuarioId(usuarioId);
@@ -98,10 +97,10 @@ public class CompraService {
 
     public DadosCompra visualizarCompra(Long idCompra, Usuario usuarioLogado) {
         var compra = repository.findById(idCompra)
-            .orElseThrow(() -> new RegraDeNegocioException("Compra não encontrada!"));
+                .orElseThrow(() -> new RegraDeNegocioException("Compra não encontrada!"));
 
         var comprador = compra.getUsuario().getId();
-        if (!validarPermissaoUsuario(usuarioLogado, comprador, PerfilEnum.ADMINISTRADOR))
+        if (!permissao.validarPermissaoUsuario(usuarioLogado, comprador, "ADMINISTRADOR"))
             throw new RegraDeNegocioException("Você não tem permissão para acessar esse conteúdo!");
 
         var dadosProdutosComprados = compra.getProdutos()
@@ -111,25 +110,4 @@ public class CompraService {
 
         return new DadosCompra(compra, dadosProdutosComprados);
     }
-
-    //TODO: Deixar essa validação em um arquivo separado
-    private boolean validarPermissaoUsuario(Usuario usuarioLogado, Long id, PerfilEnum role) {
-        var usuarioBD = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
-
-        if (!usuarioBD.getId().equals(usuarioLogado.getId())) {
-            var perfil = perfilRepository.findByNome(role);
-
-            boolean temPermissao = usuarioLogado
-                    .getAuthorities()
-                    .stream()
-                    .anyMatch(x -> x.getAuthority().equals("ROLE_" + perfil.getNome()));
-
-            if (!temPermissao) {
-                return false;
-            }
-        }
-        return true;
-    }
-
 }

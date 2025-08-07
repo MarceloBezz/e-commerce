@@ -1,6 +1,5 @@
 package br.com.e_commerce.demo.service;
 
-import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +14,7 @@ import br.com.e_commerce.demo.domain.produto.Produto;
 import br.com.e_commerce.demo.domain.usuario.Usuario;
 import br.com.e_commerce.demo.infra.exception.RegraDeNegocioException;
 import br.com.e_commerce.demo.repository.ProdutoRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class ProdutoService {
@@ -34,7 +34,7 @@ public class ProdutoService {
         return new DadosProduto(produto);
     }
 
-    @Transient
+    @Transactional
     public DadosProduto atualizarProduto(DadosEdicaoProduto dto, Usuario usuario, Long idProduto) throws RegraDeNegocioException {
         var produto = repository.findById(idProduto)
                 .orElseThrow(() -> new RegraDeNegocioException("Produto não encontrado!"));
@@ -47,7 +47,7 @@ public class ProdutoService {
         return new DadosProduto(produto);
     }
 
-    @Transient
+    @Transactional
     public void deletarProduto(Usuario usuario, Long idProduto) throws RegraDeNegocioException {
         var produto = repository.findById(idProduto)
                 .orElseThrow(() -> new RegraDeNegocioException("Produto não encontrado!"));
